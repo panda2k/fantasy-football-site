@@ -1,24 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Header from './components/Header';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { SessionResponse } from './types/api-responses';
+import { useCookies } from 'react-cookie';
+import * as api from './lib/api'
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
+  const [cookies, setCookie, removeCookie] = useCookies(['session_id'])
+  const [session, setSession] = useState<SessionResponse | null>(null)
+
+  useEffect(() => {
+    console.log('use effect')
+
+    const fetchSession = async() => {
+      const session = await api.getSession(cookies.session_id).catch(error => null)
+      setSession(session)
+    }
+
+    fetchSession()
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Header session={ session } setCookie={setCookie} setSession={setSession}/>
+        <Routes>
+          <Route path="/"></Route>
+          <Route path="/login" element={<Login setCookie={setCookie} setSession={setSession}/>}></Route>
+          <Route path="/register" element={<Register session={session} setCookie={setCookie} setSession={setSession}/>}></Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
