@@ -1,6 +1,6 @@
 import db = require('../db')
 import bcrypt = require('bcryptjs')
-import { EmailVerificationRequest, IpVerificationRequest, TrustedIp, UserAccount } from '../types/types'
+import { AccountSession, EmailVerificationRequest, IpVerificationRequest, TrustedIp, UserAccount } from '../types/types'
 import { randomBytes } from 'crypto'
 import mail = require('../email')
 
@@ -154,6 +154,13 @@ export const verifyIp = async(verificationKey: string): Promise<void> => {
         'DELETE FROM ip_address_verification_requests WHERE ip_address=$1 AND account_email=$2',
         [verificationRequest.ip_address, verificationRequest.account_email]
     )
+}
+
+export const getSession = async(sessionId: string): Promise<AccountSession | null> => {
+    return (await db.query(
+        'SELECT verified_email, display_name, session_id, account_email FROM users INNER JOIN sessions ON email = account_email WHERE session_id=$1',
+        [sessionId]
+    )).rows[0] as unknown as AccountSession | null
 }
 
 const getAccountTrustedIps = async(email: string): Promise<Array<TrustedIp>> => {

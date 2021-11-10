@@ -65,9 +65,9 @@ accountRouter.post('', async(req: express.Request<{}, {}, CreateAccountRequest>,
         }
     }   
 
-    res.status(202).json({'message': `Created account. Check ${req.body.email} for a verification email`})
+    const sessionId = await accountServices.createSession(req.body.email)
+    res.status(202).json({'session_id': sessionId, 'message': `Created account. Check ${req.body.email} for a verification email`})
 
-    
     await accountServices.createEmailVerificationRequest(req.body.email).catch(error => console.log(error))
     return 
 })
@@ -102,6 +102,16 @@ accountRouter.post('/login', async(req: express.Request<{}, {}, LoginRequest>, r
     } else {
         return res.status(200).json({'session_id': '', 'message': 'Invalid login'})
     }
+})
+
+accountRouter.get('/sessions/:sessionId', async(req, res) => {
+    const session = await accountServices.getSession(req.params.sessionId)
+
+    if (!session) {
+        return res.status(404).json({'error': 'Session not found'})
+    }
+
+    return res.status(200).json(session)
 })
 
 accountRouter.get('/verifyemail', async(req: express.Request<{}, {}, {}, VerifyRequest>, res) => {

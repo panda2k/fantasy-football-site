@@ -24,3 +24,11 @@ export interface IpVerificationRequest {
     expiration_time: number,
     verification_key: string
 }
+
+export interface AccountSession {
+    session_id: string,
+    expiration_time: number, 
+    account_email: string,
+    verified_email: boolean,
+    display_name: string
+}
