@@ -2,6 +2,7 @@ import express from 'express'
 import * as WebSocket from 'ws'
 import http from 'http'
 import bodyParser = require('body-parser')
+import cors from 'cors'
 
 // routers
 import accountRouter = require('./routes/account')
@@ -12,6 +13,7 @@ const port = 8080 || process.env.PORT
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cors())
 app.use('/accounts', accountRouter)
 
 // create simple http server
