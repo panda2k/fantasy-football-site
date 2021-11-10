@@ -12,14 +12,14 @@ CREATE TABLE users (
 );
 
 CREATE TABLE trusted_ips (
-    ip_address VARCHAR(15) NOT NULL,
+    ip_address VARCHAR(22) NOT NULL,
     account_email VARCHAR(255) NOT NULL,
     expiration_time BIGINT NOT NULL,
     FOREIGN KEY (account_email) REFERENCES users(email)
 );
 
 CREATE TABLE ip_address_verification_requests (
-    ip_address VARCHAR(15) NOT NULL,
+    ip_address VARCHAR(22) NOT NULL,
     account_email VARCHAR(255) NOT NULL,
     expiration_time BIGINT NOT NULL,
     verification_key VARCHAR(32) NOT NULL UNIQUE,

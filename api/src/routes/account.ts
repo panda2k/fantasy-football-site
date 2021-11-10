@@ -14,6 +14,7 @@ accountRouter.post('', async(req: express.Request<{}, {}, CreateAccountRequest>,
         if (error instanceof TypeError) {
             return res.status(400).json({'error': 'Must provide email'})
         } else {
+            console.log(error)
             return res.status(500).json({'error': 'Uncaught error'})
         }
     }
@@ -27,6 +28,7 @@ accountRouter.post('', async(req: express.Request<{}, {}, CreateAccountRequest>,
         if (error instanceof TypeError) {
             return res.status(400).json({'error': 'Must provide password'})
         } else {
+            console.log(error)
             return res.status(500).json({'error': 'Uncaught error'})
         }
     }
@@ -61,6 +63,7 @@ accountRouter.post('', async(req: express.Request<{}, {}, CreateAccountRequest>,
                 return res.status(400).json({'error': error.detail})
             }
         } else {
+            console.log(error)
             return res.status(500).json({'error': 'Uncaught error'})
         }
     }   
@@ -98,7 +101,7 @@ accountRouter.post('/login', async(req: express.Request<{}, {}, LoginRequest>, r
 
     if (loginResult) {
         const sessionId = await accountServices.createSession(req.body.email)
-        return res.status(200).json({'session_id': sessionId})
+        return res.status(200).json({'session_id': sessionId, 'message': 'Logged in successfully'})
     } else {
         return res.status(200).json({'session_id': '', 'message': 'Invalid login'})
     }
